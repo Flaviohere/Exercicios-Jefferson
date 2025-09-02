@@ -1,0 +1,142 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+class Clima {
+    private String condicao;
+    private int temperatura;
+
+    public Clima(String condicao, int temperatura) {
+        this.condicao = condicao;
+        this.temperatura = temperatura;
+    }
+
+    public void exibir() {
+        System.out.println("Condição: " + condicao + ", Temperatura: " + temperatura + "°C");
+    }
+
+    public String get_condicao() {
+        return condicao;
+    }
+}
+
+class Dia {
+    private String nome;
+    private ArrayList<Clima> previsoes = new ArrayList<>();
+
+    public Dia(String nome) {
+        this.nome = nome;
+    }
+
+    public void adicionar_clima(Clima c) {
+        previsoes.add(c);
+        System.out.println("Clima adicionado ao " + nome + "!");
+    }
+
+    public void remover_clima(String condicao) {
+        previsoes.removeIf(c -> c.get_condicao().equalsIgnoreCase(condicao));
+        System.out.println("Clima " + condicao + " removido (se existia).");
+    }
+
+    public void exibir() {
+        System.out.println("\nDia: " + nome);
+        if (previsoes.isEmpty()) {
+            System.out.println("Nenhuma previsão cadastrada.");
+        } else {
+            for (Clima c : previsoes) {
+                c.exibir();
+            }
+        }
+    }
+
+    public String get_nome() {
+        return nome;
+    }
+}
+
+class Menu {
+    private ArrayList<Dia> dias = new ArrayList<>();
+    private Scanner sc = new Scanner(System.in);
+
+    public void iniciar() {
+        while (true) {
+            exibir_menu();
+            int opcao = sc.nextInt();
+            sc.nextLine();
+
+            switch (opcao) {
+                case 1 -> cadastrar_dia();
+                case 2 -> mostrar_previsoes();
+                case 3 -> adicionar_clima();
+                case 4 -> remover_clima();
+                case 5 -> {
+                    System.out.println("Saindo...");
+                    return;
+                }
+                default -> System.out.println("Opção inválida, tente novamente!");
+            }
+        }
+    }
+
+    private void exibir_menu() {
+        System.out.println("\n--- MENU PREVISÃO ---");
+        System.out.println("1. Cadastrar novo dia");
+        System.out.println("2. Mostrar previsões");
+        System.out.println("3. Adicionar clima ao dia");
+        System.out.println("4. Remover clima do dia");
+        System.out.println("5. Sair");
+        System.out.print("Digite a opção: ");
+    }
+
+    private Dia selecionar_dia() {
+        if (dias.isEmpty()) {
+            System.out.println("Nenhum dia cadastrado!");
+            return null;
+        }
+        System.out.println("Escolha o índice do dia:");
+        for (int i = 0; i < dias.size(); i++) {
+            System.out.println(i + " - " + dias.get(i).get_nome());
+        }
+        int idx = sc.nextInt();
+        sc.nextLine();
+        return dias.get(idx);
+    }
+
+    private void cadastrar_dia() {
+        System.out.print("Nome do dia: ");
+        String nome = sc.nextLine();
+        dias.add(new Dia(nome));
+        System.out.println("Dia cadastrado!");
+    }
+
+    private void mostrar_previsoes() {
+        Dia d = selecionar_dia();
+        if (d != null) d.exibir();
+    }
+
+    private void adicionar_clima() {
+        Dia d = selecionar_dia();
+        if (d != null) {
+            System.out.print("Condição do clima: ");
+            String cond = sc.nextLine();
+            System.out.print("Temperatura (°C): ");
+            int temp = sc.nextInt();
+            sc.nextLine();
+            d.adicionar_clima(new Clima(cond, temp));
+        }
+    }
+
+    private void remover_clima() {
+        Dia d = selecionar_dia();
+        if (d != null) {
+            System.out.print("Condição a remover: ");
+            String cond = sc.nextLine();
+            d.remover_clima(cond);
+        }
+    }
+}
+
+public class PrevisaoClima {
+    public static void main(String[] args) {
+        new Menu().iniciar();
+    }
+}
