@@ -1,0 +1,56 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Movimento extends JFrame implements KeyListener {
+    int x = 0, y = 0;
+    final int PASSO = 20;
+
+    public Movimento() {
+        setTitle("Square Game");
+        setSize(400, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        JPanel painel = new JPanel() {
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(Color.RED);
+                g.fillRect(x, y, 20, 20);
+            }
+        };
+
+        add(painel);
+        addKeyListener(this);
+        setFocusable(true);
+        setVisible(true);
+    }
+
+    public void keyPressed(KeyEvent e) {
+        int largura = getContentPane().getWidth();
+        int altura = getContentPane().getHeight();
+
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            x += PASSO;
+            if (x >= largura) x = 0;
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            x -= PASSO;
+            if (x < 0) x = largura - PASSO;
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            y += PASSO;
+            if (y >= altura) y = 0;
+        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            y -= PASSO;
+            if (y < 0) y = altura - PASSO;
+        }
+
+        repaint();
+    }
+
+    public void keyReleased(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {}
+
+    public static void main(String[] args) {
+        new Movimento();
+    }
+}
